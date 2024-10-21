@@ -19,7 +19,7 @@ robot_cfg:
     "joint_wrist_yaw": "Z",
   
     }
-    collision_link_names: ["base_link","link_mast","link_arm_l4","link_arm_l3","link_arm_l2","link_arm_l1","link_arm_l0","link_gripper_finger_left","link_gripper_finger_right"]
+    #collision_link_names: ["base_link","link_mast","link_arm_l4","link_arm_l3","link_arm_l2","link_arm_l1","link_arm_l0","link_gripper_finger_left","link_gripper_finger_right"]
     collision_spheres:
       base_link:
         - "center": [0.0, 0.12, 0.06]

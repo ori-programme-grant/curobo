@@ -159,8 +159,8 @@ def main():
     # Make a target to follow
     target = cuboid.VisualCuboid(
         "/World/target",
-        position=np.array([0.5, 0, 0.5]),
-        orientation=np.array([0, 1, 0, 0]),
+        position=np.array([-0.037, -0.616, 0.70]),
+        orientation=np.array([0.707, 0, 0, -0.707]),
         color=np.array([1.0, 0, 0]),
         size=0.05,
     )
@@ -194,7 +194,7 @@ def main():
     world_cfg_table = WorldConfig.from_dict(
         load_yaml(join_path(get_world_configs_path(), "collision_table.yml"))
     )
-    world_cfg_table.cuboid[0].pose[2] -= 0.02
+    world_cfg_table.cuboid[0].pose[2] -= 0.5 # increase it to avoid collision between ground and robot
     world_cfg1 = WorldConfig.from_dict(
         load_yaml(join_path(get_world_configs_path(), "collision_table.yml"))
     ).get_mesh_world()
@@ -282,9 +282,9 @@ def main():
             idx_list = [robot.get_dof_index(x) for x in j_names]
             robot.set_joint_positions(default_config, idx_list)
 
-            robot._articulation_view.set_max_efforts(
-                values=np.array([5000 for i in range(len(idx_list))]), joint_indices=idx_list
-            )
+            # robot._articulation_view.set_max_efforts(
+            #     values=np.array([5000 for i in range(len(idx_list))]), joint_indices=idx_list
+            # )
         if step_index < 20:
             continue
 
