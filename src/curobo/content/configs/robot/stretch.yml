@@ -184,9 +184,9 @@ robot_cfg:
 
     cspace:
       joint_names: [
-        "base_x","base_y", "base_z", "joint_lift","joint_arm_l3","joint_arm_l2","joint_arm_l1","joint_arm_l0","joint_wrist_yaw","joint_gripper_finger_right","joint_gripper_finger_left"]
-      retract_config: [0,0, 0, 0.5,0.05,0.05,0.05,0.05,0,0,0]
-      null_space_weight: [1,1,1,1,1,1,1,1,1,1,1]
-      cspace_distance_weight: [1,1,1,1,1,1,1,1,1,1,1]
+        "base_x","base_z", "joint_lift","joint_arm_l3","joint_arm_l2","joint_arm_l1","joint_arm_l0","joint_wrist_yaw","joint_gripper_finger_right","joint_gripper_finger_left"]
+      retract_config: [0, 0, 0.5,0.05,0.05,0.05,0.05,0,0,0]
+      null_space_weight: [1,1,1,1,1,1,1,1,1,1]
+      cspace_distance_weight: [1,1,1,1,1,1,1,1,1,1]
       max_acceleration: 15.0 #15.0
       max_jerk: 500.0

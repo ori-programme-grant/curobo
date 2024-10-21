@@ -198,21 +198,12 @@
     <child link="base_link_x"/>
     <axis xyz="1 0 0"/>
     <dynamics damping="10.0"/>
-    <limit effort="87" lower="-5.0" upper="5.0" velocity="1.0"/>
-  </joint>
-
-<joint name="base_y" type="prismatic">
-    <origin rpy="0 0 0.0" xyz="0 0 0.0"/>
-    <parent link="base_link_x"/>
-    <child link="base_link_y"/>
-    <axis xyz="0 1 0"/>
-    <dynamics damping="10.0"/>
-    <limit effort="87" lower="-5.0" upper="5.0" velocity="1.0"/>
+    <limit effort="87" lower="-500.0" upper="500.0" velocity="1.0"/>
   </joint>
 
 <joint name="base_z" type="revolute">
     <origin rpy="0 0 0.0" xyz="0 0 0.0"/>
-    <parent link="base_link_y"/>
+    <parent link="base_link_x"/>
     <child link="base_link_z"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="10.0"/>
