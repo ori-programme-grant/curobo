@@ -88,6 +88,8 @@ from curobo.wrap.reacher.ik_solver import IKSolver, IKSolverConfig
 from curobo.wrap.reacher.motion_gen import MotionGen, MotionGenConfig, MotionGenPlanConfig
 from curobo.wrap.reacher.mpc import MpcSolver, MpcSolverConfig
 
+import carb
+
 ########### OV #################
 
 
@@ -135,6 +137,16 @@ def draw_points(pose, success):
 
 
 def main():
+    carb.settings.get_settings().set_string(
+    "/persistent/isaac/asset_root/nvidia",
+    "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/2023.1.1",
+    )
+
+    carb.settings.get_settings().set_string(
+    "/persistent/isaac/asset_root/nvidia",
+    "http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.0",
+    )
+
     # assuming obstacles are in objects_path:
     my_world = World(stage_units_in_meters=1.0)
     stage = my_world.stage
@@ -150,7 +162,7 @@ def main():
     target = cuboid.VisualCuboid(
         "/World/target",
         position=np.array([0.5, 0, 0.5]),
-        orientation=np.array([0, 1, 0, 0]),
+        orientation=np.array([1, 0, 0, 0]),
         color=np.array([1.0, 0, 0]),
         size=0.05,
     )
@@ -178,7 +190,7 @@ def main():
     world_cfg_table = WorldConfig.from_dict(
         load_yaml(join_path(get_world_configs_path(), "collision_table.yml"))
     )
-    world_cfg_table.cuboid[0].pose[2] -= 0.002
+    world_cfg_table.cuboid[0].pose[2] -= 5.0
     world_cfg1 = WorldConfig.from_dict(
         load_yaml(join_path(get_world_configs_path(), "collision_table.yml"))
     ).get_mesh_world()
@@ -190,9 +202,9 @@ def main():
     ik_config = IKSolverConfig.load_from_robot_config(
         robot_cfg,
         world_cfg,
-        rotation_threshold=0.05,
-        position_threshold=0.005,
-        num_seeds=20,
+        # rotation_threshold=0.05,
+        # position_threshold=0.01,
+        num_seeds=32,
         self_collision_check=True,
         self_collision_opt=True,
         tensor_args=tensor_args,
@@ -212,7 +224,10 @@ def main():
     goal_pose = goal_pose.repeat(position_grid_offset.shape[0])
     goal_pose.position += position_grid_offset
 
-    result = ik_solver.solve_batch(goal_pose)
+    result = ik_solver.solve_batch(goal_pose,
+                                retract_config=ik_solver.get_retract_config().view(1, -1).repeat(goal_pose.batch, 1),
+                                seed_config=ik_solver.get_retract_config().view(1, 1, -1).repeat(goal_pose.batch, 1, 1)
+                                )
 
     print("Curobo is Ready")
     add_extensions(simulation_app, args.headless_mode)
@@ -231,8 +246,6 @@ def main():
             if i % 100 == 0:
                 print("**** Click Play to start simulation *****")
             i += 1
-            # if step_index == 0:
-            #    my_world.play()
             continue
 
         step_index = my_world.current_time_step_index
@@ -319,7 +332,10 @@ def main():
             )
             goal_pose.position[:] = ik_goal.position[:] + position_grid_offset
             goal_pose.quaternion[:] = ik_goal.quaternion[:]
-            result = ik_solver.solve_batch(goal_pose)
+            result = ik_solver.solve_batch(goal_pose,
+                                           retract_config=ik_solver.get_retract_config().view(1, -1).repeat(goal_pose.batch, 1),
+                                           seed_config=ik_solver.get_retract_config().view(1, 1, -1).repeat(goal_pose.batch, 1, 1)
+                                           )
 
             succ = torch.any(result.success)
             print(
